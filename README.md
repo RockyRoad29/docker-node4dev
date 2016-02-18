@@ -1,6 +1,6 @@
 # docker-node4dev
 
-A [docker](https://www.docker.com/) platform for developing web or
+A [docker](https://www.docker.com/) platform for developing web or 
 nodejs applications.
 
 Popular tools and frameworks pre-installed globally
@@ -8,11 +8,26 @@ ready to use.
 
 Based on nodejs official node image.
 
+The goal is to have a reliable and up-to-date development platform,
+usable for different projects, rather than to make a slim image
+with high performance. Reusability of image layers will be how
+we save space.
+
 Work in progress, image published on 
 [dockerhub](https://hub.docker.com/r/rockyroad/node4dev/).
 
 Comments welcome.
 
+## How to run
+
+	name=mywebdevs
+	mkdir -p $name && cd $_
+    docker run -it \
+       --name $name \
+       -v `pwd`:/home/user1/node-projects \
+       -w /usr/src/app \
+		rockyroad/node4dev /bin/bash
+	
 ## Base Image
 
 This is the **nodejs official** image (link from
@@ -49,7 +64,7 @@ directory mounted.
 
 28.9 MB of additional disk space for libgpm2 vim vim-common vim-runtime
 
-### more tools
+### more system tools
 
 Some simple scripts or statically linked app like
 [`jq`]https://github.com/stedolan/jq) could live in the user's mounted
@@ -102,7 +117,13 @@ like the global `nodes_modules`.
 
 When you're tailoring your image to suit your needs, you may encounter errors
 (e.g. unresolved package dependencies) and have to rebuild several times in
-the day. To save time and bandwidth, you can provide already downloaded packages in the `./cache/npm` subdirectory at build time. 
+the day. To save time and bandwidth, you can provide already downloaded packages at build time in a tarball named `npm-cache.tar.xz` .
+No directory components will be striped, so all your package directories
+must appear at top level.
+
+It would not be wise to include such a big file (and outdating fast)
+in the git repo, but I included a symlink as a reminder.
+
 
 ## Updating npm
 Two main methods around:
@@ -124,3 +145,7 @@ or using the installer provided by npmjs:
  - 35729 for livereload  (to test)
 
 
+
+## Npm packages
+
+More to come when dependencies issues are solved. Help welcome.

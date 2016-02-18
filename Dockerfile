@@ -1,7 +1,5 @@
 FROM node
 MAINTAINER RockyRoad
-LABEL version="0.1.0"
-LABEL variant="dev"
 
 # Install dependencies
 RUN apt-get update \
@@ -18,8 +16,8 @@ RUN useradd -ms /bin/bash -Uu 1000 -G staff $USER1
 # Allow cache persistence:
 #RUN echo cache = /var/local/cache/npm > /usr/local/etc/npmrc
 ADD etc/* /usr/local/etc/
-RUN mkdir -p /var/local/cache
-ADD cache/* /var/local/cache
+RUN mkdir -p /var/local/cache/npm
+ADD npm-cache.tar.xz /var/local/cache/npm
 RUN chown -R root:staff /var/local/*
 RUN chmod g+w -R /var/local/*
 
@@ -33,31 +31,27 @@ RUN mkdir -p /home/$USER1/node-projects
 WORKDIR /home/$USER1/node-projects
 # Allow user env or projects persistence
 VOLUME /home/$USER1
+# or, avoiding config files
 VOLUME /home/$USER1/node-projects
-VOLUME /var/local/cache
-# IPC
+# if you want to share npm cache
+VOLUME /var/local/cache/npm
+# nodejs usual ports
 EXPOSE 8080 8081 8082
 # for livereload - TESTME
 EXPOSE 35729
 
-# Check write access for npm before starting the downloads ...
+# Check user write access for npm -g before going any further
 RUN (if [ ! -w /var/local/cache/npm ]; then echo NOACCESS to npm cache; exit 1;fi)
 RUN [ -w /usr/local/lib/node_modules ] || (echo NOACCESS to npm lib && exit 1)
 
 # Globally install (in /usr/local/lib/node_modules) popular packages
-# Broken down to steps for debugging
 RUN npm ls -l -g > npmls-g.0 
 RUN npm install -g\
     grunt-cli \
-    grunt-init 
-RUN npm ls -l -g > npmls-g.1
-
-RUN npm install -g\
-    bower 
-RUN npm ls -l -g > npmls-g.2 
-
-RUN npm install -g\
+    grunt-init \
+    bower \
     requirejs
-RUN npm ls -l -g > npmls-g.3
 
 CMD ["/bin/bash"]
+LABEL variant="dev"
+LABEL version="0.1.1"
