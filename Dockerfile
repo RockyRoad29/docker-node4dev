@@ -53,5 +53,3 @@ RUN npm install -g\
     requirejs
 
 CMD ["/bin/bash"]
-LABEL variant="dev"
-LABEL version="0.1.1"

@@ -20,14 +20,21 @@ Comments welcome.
 
 ## How to run
 
+### Synopsis
 	name=mywebdevs
 	mkdir -p $name && cd $_
     docker run -it \
        --name $name \
        -v `pwd`:/home/user1/node-projects \
-       -w /usr/src/app \
+       -p 8080:8080 -p 35729:35729 \
 		rockyroad/node4dev /bin/bash
-	
+
+### Development life cycle use cases
+  - [add features to this image](workshop-extend/README.md)
+  - [rebuild extended image](workshop-build/README.md)
+  - [use this image to develop your own project](workshop-apps/README.md)
+  - [tailor a deployment image for your project](workshop-deploy/README.md)
+
 ## Base Image
 
 This is the **nodejs official** image (link from
@@ -67,7 +74,7 @@ directory mounted.
 ### more system tools
 
 Some simple scripts or statically linked app like
-[`jq`]https://github.com/stedolan/jq) could live in the user's mounted
+[`jq`](https://github.com/stedolan/jq) could live in the user's mounted
 volume, e.g. \~/bin. So they are not included in the image.
 
 ## User account
@@ -78,6 +85,8 @@ volume and you don't want your files to be owned by `root`.
 
 You can provide the username of your choice as a build argument, otherwise
 the artistic name `user1` will be yours, with a *uid* of *1000*.
+
+@TODO *provide build ARGument for user1 UID.*
 
 Permissions are designed to give you full access to `/usr/local` and 
 `/var/local`, so that you will be able to install more packages globally .
@@ -149,3 +158,4 @@ or using the installer provided by npmjs:
 ## Npm packages
 
 More to come when dependencies issues are solved. Help welcome.
+
