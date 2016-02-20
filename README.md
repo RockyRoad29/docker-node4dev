@@ -26,7 +26,8 @@ Comments welcome.
     docker run -it \
        --name $name \
        -v `pwd`:/home/user1/node-projects \
-       -p 8080:8080 -p 35729:35729 \
+       -v `pwd`/cache/npm:/var/local/cache/npm \
+       -p 8080:8080 \
 		rockyroad/node4dev /bin/bash
 
 ### Development life cycle use cases
@@ -83,10 +84,9 @@ Even in docker containers, doing experiments using the root account in
 not recommended. Typically you will be generating an app in a mounted
 volume and you don't want your files to be owned by `root`.
 
-You can provide the username of your choice as a build argument, otherwise
-the artistic name `user1` will be yours, with a *uid* of *1000*.
-
-@TODO *provide build ARGument for user1 UID.*
+You can provide the **username** and **uid** of your choice as build 
+arguments `USER1` and `UID1`, otherwise
+the artistic name `user1` will be yours, with a *uid* of `1000`.
 
 Permissions are designed to give you full access to `/usr/local` and 
 `/var/local`, so that you will be able to install more packages globally .

@@ -10,8 +10,11 @@ RUN apt-get update \
     tree \
     vim    
 
+
 ARG USER1=user1
-RUN useradd -ms /bin/bash -Uu 1000 -G staff $USER1
+ARG UID1=1000
+
+RUN useradd -ms /bin/bash -Uu $UID1 -G staff $USER1
 
 # Allow cache persistence:
 #RUN echo cache = /var/local/cache/npm > /usr/local/etc/npmrc
@@ -45,11 +48,15 @@ RUN (if [ ! -w /var/local/cache/npm ]; then echo NOACCESS to npm cache; exit 1;f
 RUN [ -w /usr/local/lib/node_modules ] || (echo NOACCESS to npm lib && exit 1)
 
 # Globally install (in /usr/local/lib/node_modules) popular packages
-RUN npm ls -l -g > npmls-g.0 
+# Allow intermediate layers, growup by steps
 RUN npm install -g\
     grunt-cli \
     grunt-init \
     bower \
     requirejs
+
+RUN npm install -g \
+    yo \
+    generator-webapp
 
 CMD ["/bin/bash"]
